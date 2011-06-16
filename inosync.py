@@ -49,13 +49,15 @@ class RsyncEvent(ProcessEvent):
     self.pretend = pretend
 
   def sync(self):
-    args = [config.rsync, "-ltrp", "--delete"]
+    args = [config.rsync, "-vcrz", "--delete-after"]
     args.append("--bwlimit=%s" % config.rspeed)
     if config.logfile:
       args.append("--log-file=%s" % config.logfile)
     if "rexcludes" in dir(config):
       for rexclude in config.rexcludes:
         args.append("--exclude=%s" % rexclude)
+    if "excludeFile" in dir(config):
+        args.append("--exclude-from=%s" % config.excludeFile)
     args.append(config.wpath)
     args.append("%s")
     cmd = " ".join(args)
